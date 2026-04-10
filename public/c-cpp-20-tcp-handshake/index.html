@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>C/C++学习总结（二十）——TCP三次握手模拟 | ZeoxCode</title>
+  <meta name="keywords" content=" C , 网络 ">
+  <meta name="description" content="C/C++学习总结（二十）——TCP三次握手模拟 | ZeoxCode">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="TCP 三次握手过程1234客户端                    服务端  |  ——— SYN(seq&#x3D;x) ———→  |   客户端：CLOSED → SYN_SENT  |  ←— SYN+ACK(ack&#x3D;x+1) —|   服务端：LISTEN → SYN_RCVD  |  ——— ACK(ack&#x3D;y+1) ———→ |   双方：→ ESTABLISHED  状态定义12345">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C&#x2F;C++学习总结（二十）——TCP三次握手模拟">
+<meta property="og:url" content="http://example.com/c-cpp-20-tcp-handshake/index.html">
+<meta property="og:site_name" content="ZeoxCode">
+<meta property="og:description" content="TCP 三次握手过程1234客户端                    服务端  |  ——— SYN(seq&#x3D;x) ———→  |   客户端：CLOSED → SYN_SENT  |  ←— SYN+ACK(ack&#x3D;x+1) —|   服务端：LISTEN → SYN_RCVD  |  ——— ACK(ack&#x3D;y+1) ———→ |   双方：→ ESTABLISHED  状态定义12345">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-11-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-10T01:15:21.870Z">
+<meta property="article:author" content="ZeoxCode">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="网络">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/logo.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-light.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/"
+   class="avatar_target">
+    <img class="avatar"
+         src="/img/avatar.jpg"/>
+</a>
+<div class="author">
+    <span>ZeoxCode</span>
+</div>
+
+<div class="icon">
+    
+        
+            <a title="rss"
+               href="/atom.xml"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-rss"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+            <a title="github"
+               href="https://github.com/ZeoxCode"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-github"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            <a title="email"
+               href="mailto:luzhongxiux@gmail.com"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-email"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+</div>
+
+
+
+
+
+<ul>
+    <li>
+        <div class="all active" data-rel="All">All
+            
+                <small>(22)</small>
+            
+        </div>
+    </li>
+    
+        
+            
+                
+    <li>
+        <div data-rel="全栈开发">
+            <i class="fold iconfont icon-right"></i>
+            全栈开发
+            <small>(20)</small>
+        </div>
+        
+            <ul class="sub hide">
+                
+                    
+    <li>
+        <div data-rel="全栈开发&lt;---&gt;后端">
+            
+            后端
+            <small>(20)</small>
+        </div>
+        
+    </li>
+
+                
+            </ul>
+        
+    </li>
+
+            
+        
+    
+        
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+        
+            
+            
+            
+    </div>
+    <div>
+        
+        
+    </div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="22">
+<input type="hidden" id="yelog_site_word_count" value="4.9k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="search shortcut key i"></i>
+            <div class="right-title">All</div>
+            <i class="iconfont icon-file-tree" data-title="switch to outline view shortcut key w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="return"></i>
+            <input id="local-search-input" autocomplete="off"/>
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="case sensitive"></i>
+            <i class="iconfont icon-tag" data-title="label"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">outline</div>
+            <i class="iconfont icon-list" data-title="switch to article list"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>网络</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C++</a>
+            </li>
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-20-tcp-handshake/"
+           data-tag="C,网络"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（二十）——TCP三次握手模拟">C/C++学习总结（二十）——TCP三次握手模拟</span>
+            <span class="post-date" title="2016-11-09 00:00:00">2016/11/09</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-19-socket/"
+           data-tag="C,网络"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十九）——Socket网络编程">C/C++学习总结（十九）——Socket网络编程</span>
+            <span class="post-date" title="2016-11-04 00:00:00">2016/11/04</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-18-stl/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十八）——STL初步">C/C++学习总结（十八）——STL初步</span>
+            <span class="post-date" title="2016-10-31 00:00:00">2016/10/31</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-17-inheritance/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十七）——继承与多态">C/C++学习总结（十七）——继承与多态</span>
+            <span class="post-date" title="2016-10-27 00:00:00">2016/10/27</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-16-constructor/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十六）——构造函数与析构函数">C/C++学习总结（十六）——构造函数与析构函数</span>
+            <span class="post-date" title="2016-10-23 00:00:00">2016/10/23</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-15-class/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十五）——类与对象">C/C++学习总结（十五）——类与对象</span>
+            <span class="post-date" title="2016-10-20 00:00:00">2016/10/20</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-14-cpp-intro/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十四）——C++入门">C/C++学习总结（十四）——C++入门</span>
+            <span class="post-date" title="2016-10-17 00:00:00">2016/10/17</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-13-file-io/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十三）——文件操作">C/C++学习总结（十三）——文件操作</span>
+            <span class="post-date" title="2016-10-14 00:00:00">2016/10/14</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-12-memory/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十二）——内存管理">C/C++学习总结（十二）——内存管理</span>
+            <span class="post-date" title="2016-10-11 00:00:00">2016/10/11</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-11-struct/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十一）——结构体">C/C++学习总结（十一）——结构体</span>
+            <span class="post-date" title="2016-10-08 00:00:00">2016/10/08</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-10-pointer-2/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十）——指针（下）">C/C++学习总结（十）——指针（下）</span>
+            <span class="post-date" title="2016-10-05 00:00:00">2016/10/05</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-09-pointer-1/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（九）——指针（上）">C/C++学习总结（九）——指针（上）</span>
+            <span class="post-date" title="2016-10-01 00:00:00">2016/10/01</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-08-strings/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（八）——字符串">C/C++学习总结（八）——字符串</span>
+            <span class="post-date" title="2016-09-27 00:00:00">2016/09/27</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-07-arrays/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（七）——数组">C/C++学习总结（七）——数组</span>
+            <span class="post-date" title="2016-09-24 00:00:00">2016/09/24</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-06-functions/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（六）——函数与递归">C/C++学习总结（六）——函数与递归</span>
+            <span class="post-date" title="2016-09-21 00:00:00">2016/09/21</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-05-loops/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（五）——循环">C/C++学习总结（五）——循环</span>
+            <span class="post-date" title="2016-09-18 00:00:00">2016/09/18</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-04-control-flow/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（四）——流程控制">C/C++学习总结（四）——流程控制</span>
+            <span class="post-date" title="2016-09-15 00:00:00">2016/09/15</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-03-operators/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（三）——运算符">C/C++学习总结（三）——运算符</span>
+            <span class="post-date" title="2016-09-12 00:00:00">2016/09/12</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-02-data-types/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（二）——基本数据类型">C/C++学习总结（二）——基本数据类型</span>
+            <span class="post-date" title="2016-09-09 00:00:00">2016/09/09</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-01-start/"
+           data-tag="C,C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（一）——开篇">C/C++学习总结（一）——开篇</span>
+            <span class="post-date" title="2016-09-07 00:00:00">2016/09/07</span>
+        </a>
+        
+        
+        <a  class="All "
+           href="/hello-world"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Hello World">Hello World</span>
+            <span class="post-date" title="2016-09-06 00:00:00">2016/09/06</span>
+        </a>
+        
+        
+        <a  class="All "
+           href="/Update"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Update">Update</span>
+            <span class="post-date" title="2016-09-06 00:00:00">2016/09/06</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="Toggle full screen shortcut key s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-c-cpp-20-tcp-handshake" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">C/C++学习总结（二十）——TCP三次握手模拟</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="全栈开发">全栈开发</a> > 
+            
+            <a  data-rel="全栈开发&lt;---&gt;后端">后端</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color2">C</a>
+            
+            <a class="color3">网络</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2026-04-10 09:15:21'>2016-11-09 00:00</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:451</span>
+        
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="toc-text">TCP 三次握手过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E5%AE%9A%E4%B9%89"><span class="toc-text">状态定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%A5%E6%96%87%E6%A0%87%E5%BF%97%E4%BD%8D"><span class="toc-text">报文标志位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A8%A1%E6%8B%9F%E9%80%BB%E8%BE%91"><span class="toc-text">核心模拟逻辑</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="TCP-三次握手过程"><a href="#TCP-三次握手过程" class="headerlink" title="TCP 三次握手过程"></a>TCP 三次握手过程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">客户端                    服务端</span><br><span class="line">  |  ——— SYN(seq=x) ———→  |   客户端：CLOSED → SYN_SENT</span><br><span class="line">  |  ←— SYN+ACK(ack=x+1) —|   服务端：LISTEN → SYN_RCVD</span><br><span class="line">  |  ——— ACK(ack=y+1) ———→ |   双方：→ ESTABLISHED</span><br></pre></td></tr></table></figure>
+
+<h2 id="状态定义"><a href="#状态定义" class="headerlink" title="状态定义"></a>状态定义</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    CLOSED,</span><br><span class="line">    LISTEN,</span><br><span class="line">    SYN_SENT,</span><br><span class="line">    SYN_RCVD,</span><br><span class="line">    ESTABLISHED</span><br><span class="line">&#125; TCPState;</span><br></pre></td></tr></table></figure>
+
+<h2 id="报文标志位"><a href="#报文标志位" class="headerlink" title="报文标志位"></a>报文标志位</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SYN 0x02</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ACK 0x10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FIN 0x01</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="核心模拟逻辑"><a href="#核心模拟逻辑" class="headerlink" title="核心模拟逻辑"></a>核心模拟逻辑</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> seq;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> ack;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags;</span><br><span class="line">&#125; Packet;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端发起握手</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">client_handshake</span><span class="params">(<span class="type">int</span> sock)</span> &#123;</span><br><span class="line">    Packet pkt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第一次握手：发SYN</span></span><br><span class="line">    pkt.seq   = rand();</span><br><span class="line">    pkt.flags = SYN;</span><br><span class="line">    send(sock, &amp;pkt, <span class="keyword">sizeof</span>(pkt), <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Client → SYN sent, seq=%u\n&quot;</span>, pkt.seq);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第二次握手：收SYN+ACK</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> client_seq = pkt.seq;</span><br><span class="line">    recv(sock, &amp;pkt, <span class="keyword">sizeof</span>(pkt), <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Client ← SYN+ACK received\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第三次握手：发ACK</span></span><br><span class="line">    Packet ack_pkt;</span><br><span class="line">    ack_pkt.seq   = client_seq + <span class="number">1</span>;</span><br><span class="line">    ack_pkt.ack   = pkt.seq + <span class="number">1</span>;</span><br><span class="line">    ack_pkt.flags = ACK;</span><br><span class="line">    send(sock, &amp;ack_pkt, <span class="keyword">sizeof</span>(ack_pkt), <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Client → ACK sent\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Client state: ESTABLISHED\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务端响应握手</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">server_handshake</span><span class="params">(<span class="type">int</span> sock)</span> &#123;</span><br><span class="line">    Packet pkt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 收第一次握手</span></span><br><span class="line">    recv(sock, &amp;pkt, <span class="keyword">sizeof</span>(pkt), <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Server ← SYN received, seq=%u\n&quot;</span>, pkt.seq);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第二次握手：发SYN+ACK</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> client_seq = pkt.seq;</span><br><span class="line">    Packet synack;</span><br><span class="line">    synack.seq   = rand();</span><br><span class="line">    synack.ack   = client_seq + <span class="number">1</span>;</span><br><span class="line">    synack.flags = SYN | ACK;</span><br><span class="line">    send(sock, &amp;synack, <span class="keyword">sizeof</span>(synack), <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Server → SYN+ACK sent\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 收第三次握手</span></span><br><span class="line">    recv(sock, &amp;pkt, <span class="keyword">sizeof</span>(pkt), <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Server ← ACK received\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Server state: ESTABLISHED\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>问题：</strong> 直接用结构体发送，两端字节序不一致导致seq&#x2F;ack值错误<br><strong>解决：</strong> 发送前用 <code>htonl()</code> 转换，接收后用 <code>ntohl()</code> 还原</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">synack.seq = htonl(rand());</span><br><span class="line"><span class="comment">// 接收方：</span></span><br><span class="line">pkt.seq = ntohl(pkt.seq);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>问题：</strong> <code>#pragma pack(1)</code> 未加，结构体实际大小与预期不符，recv读取字节数对不上<br><strong>解决：</strong> 报文结构体加 <code>#pragma pack(1)</code>，关闭内存对齐。</p>
+<hr>
+<p><strong>问题：</strong> 服务端 accept 阻塞，客户端先跑完退出，connect 失败<br><strong>解决：</strong> 确保服务端先启动并进入 listen 状态，再启动客户端。</p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 luzhongxiux@gmail.com </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2025 ZeoxCode
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="Toggle full screen shortcut key s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
