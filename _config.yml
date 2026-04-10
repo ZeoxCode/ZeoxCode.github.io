@@ -7,7 +7,7 @@ title: Hexo
 subtitle: ''
 description: ''
 keywords:
-author: zoexCode
+author: ZeoxCode
 language: en
 timezone: ''
 
@@ -102,7 +102,7 @@ theme: 3-hexo
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/Zoexcode/zoexcode.github.io
+  repo: https://github.com/ZeoxCode/ZeoxCode.github.io
   branch: gh-pages  # 专门存放生成的静态文件
   message: "Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}"
 
