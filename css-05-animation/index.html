@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CSS 05 - 过渡与动画 | ZeoxCode</title>
+  <meta name="keywords" content=" CSS , 前端 ">
+  <meta name="description" content="CSS 05 - 过渡与动画 | ZeoxCode">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="XMLHttpRequest（传统方式）123456789101112131415161718192021const xhr &#x3D; new XMLHttpRequest();xhr.open(&quot;GET&quot;, &quot;https:&#x2F;&#x2F;api.example.com&#x2F;users&quot;, true);  &#x2F;&#x2F; true&#x3D;异步xhr.onreadystatechange &#x3D; fu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS 05 - Ajax 与表单交互">
+<meta property="og:url" content="http://example.com/js-05-ajax/index.html">
+<meta property="og:site_name" content="ZeoxCode">
+<meta property="og:description" content="XMLHttpRequest（传统方式）123456789101112131415161718192021const xhr &#x3D; new XMLHttpRequest();xhr.open(&quot;GET&quot;, &quot;https:&#x2F;&#x2F;api.example.com&#x2F;users&quot;, true);  &#x2F;&#x2F; true&#x3D;异步xhr.onreadystatechange &#x3D; fu">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-11T07:34:03.463Z">
+<meta property="article:author" content="ZeoxCode">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/logo.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-light.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/"
+   class="avatar_target">
+    <img class="avatar"
+         src="/img/avatar.jpg"/>
+</a>
+<div class="author">
+    <span>ZeoxCode</span>
+</div>
+
+<div class="icon">
+    
+        
+            <a title="rss"
+               href="/atom.xml"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-rss"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+            <a title="github"
+               href="https://github.com/ZeoxCode"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-github"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            <a title="email"
+               href="mailto:luzhongxiux@gmail.com"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-email"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+</div>
+
+
+
+
+
+<ul>
+    <li>
+        <div class="all active" data-rel="All">All
+            
+                <small>(67)</small>
+            
+        </div>
+    </li>
+    
+        
+            
+                
+    <li>
+        <div data-rel="全栈开发">
+            <i class="fold iconfont icon-right"></i>
+            全栈开发
+            <small>(13)</small>
+        </div>
+        
+            <ul class="sub hide">
+                
+                    
+    <li>
+        <div data-rel="全栈开发&lt;---&gt;前端">
+            
+            前端
+            <small>(13)</small>
+        </div>
+        
+    </li>
+
+                
+            </ul>
+        
+    </li>
+
+            
+        
+    
+        
+            
+                
+    <li>
+        <div data-rel="编程语言">
+            <i class="fold iconfont icon-right"></i>
+            编程语言
+            <small>(34)</small>
+        </div>
+        
+            <ul class="sub hide">
+                
+                    
+    <li>
+        <div data-rel="编程语言&lt;---&gt;C/C++">
+            
+            C/C++
+            <small>(20)</small>
+        </div>
+        
+    </li>
+
+                
+                    
+    <li>
+        <div data-rel="编程语言&lt;---&gt;Java">
+            
+            Java
+            <small>(14)</small>
+        </div>
+        
+    </li>
+
+                
+            </ul>
+        
+    </li>
+
+            
+        
+    
+        
+            
+                
+    <li>
+        <div data-rel="计算机基础">
+            <i class="fold iconfont icon-right"></i>
+            计算机基础
+            <small>(18)</small>
+        </div>
+        
+            <ul class="sub hide">
+                
+                    
+    <li>
+        <div data-rel="计算机基础&lt;---&gt;数据结构">
+            
+            数据结构
+            <small>(9)</small>
+        </div>
+        
+    </li>
+
+                
+                    
+    <li>
+        <div data-rel="计算机基础&lt;---&gt;数据库">
+            
+            数据库
+            <small>(9)</small>
+        </div>
+        
+    </li>
+
+                
+            </ul>
+        
+    </li>
+
+            
+        
+    
+        
+            
+        
+    
+        
+            
+        
+    
+        
+            
+        
+    
+        
+            
+        
+    
+        
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+        
+            
+            
+            
+    </div>
+    <div>
+        
+        
+    </div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="67">
+<input type="hidden" id="yelog_site_word_count" value="24.3k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="search shortcut key i"></i>
+            <div class="right-title">All</div>
+            <i class="iconfont icon-file-tree" data-title="switch to outline view shortcut key w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="return"></i>
+            <input id="local-search-input" autocomplete="off"/>
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="case sensitive"></i>
+            <i class="iconfont icon-tag" data-title="label"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">outline</div>
+            <i class="iconfont icon-list" data-title="switch to article list"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>前端</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>数据结构</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>数据库</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>网络</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C++</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>CSS</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>HTML</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Java</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>JavaScript</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>SQL</a>
+            </li>
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/js-05-ajax/"
+           data-tag="前端,JavaScript"
+           data-author="" >
+            <span class="post-title" title="JS 05 - Ajax 与表单交互">JS 05 - Ajax 与表单交互</span>
+            <span class="post-date" title="2017-08-05 00:00:00">2017/08/05</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/js-04-events/"
+           data-tag="前端,JavaScript"
+           data-author="" >
+            <span class="post-title" title="JS 04 - 事件处理">JS 04 - 事件处理</span>
+            <span class="post-date" title="2017-07-28 00:00:00">2017/07/28</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/js-03-dom/"
+           data-tag="前端,JavaScript"
+           data-author="" >
+            <span class="post-title" title="JS 03 - DOM 操作">JS 03 - DOM 操作</span>
+            <span class="post-date" title="2017-07-20 00:00:00">2017/07/20</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/js-02-function-scope/"
+           data-tag="前端,JavaScript"
+           data-author="" >
+            <span class="post-title" title="JS 02 - 函数与作用域">JS 02 - 函数与作用域</span>
+            <span class="post-date" title="2017-07-12 00:00:00">2017/07/12</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/js-01-basics/"
+           data-tag="前端,JavaScript"
+           data-author="" >
+            <span class="post-title" title="JS 01 - 基础语法与数据类型">JS 01 - 基础语法与数据类型</span>
+            <span class="post-date" title="2017-07-05 00:00:00">2017/07/05</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/css-05-animation/"
+           data-tag="CSS,前端"
+           data-author="" >
+            <span class="post-title" title="CSS 05 - 过渡与动画">CSS 05 - 过渡与动画</span>
+            <span class="post-date" title="2017-06-26 00:00:00">2017/06/26</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/css-04-flexbox/"
+           data-tag="CSS,前端"
+           data-author="" >
+            <span class="post-title" title="CSS 04 - Flexbox 布局">CSS 04 - Flexbox 布局</span>
+            <span class="post-date" title="2017-06-18 00:00:00">2017/06/18</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/css-03-layout/"
+           data-tag="CSS,前端"
+           data-author="" >
+            <span class="post-title" title="CSS 03 - 浮动与定位">CSS 03 - 浮动与定位</span>
+            <span class="post-date" title="2017-06-10 00:00:00">2017/06/10</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/css-02-box-model/"
+           data-tag="CSS,前端"
+           data-author="" >
+            <span class="post-title" title="CSS 02 - 盒模型">CSS 02 - 盒模型</span>
+            <span class="post-date" title="2017-06-02 00:00:00">2017/06/02</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/css-01-selectors/"
+           data-tag="CSS,前端"
+           data-author="" >
+            <span class="post-title" title="CSS 01 - 选择器与基本样式">CSS 01 - 选择器与基本样式</span>
+            <span class="post-date" title="2017-05-25 00:00:00">2017/05/25</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/html-03-html5/"
+           data-tag="前端,HTML"
+           data-author="" >
+            <span class="post-title" title="HTML 03 - HTML5 语义化标签">HTML 03 - HTML5 语义化标签</span>
+            <span class="post-date" title="2017-05-18 00:00:00">2017/05/18</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/html-02-form-table/"
+           data-tag="前端,HTML"
+           data-author="" >
+            <span class="post-title" title="HTML 02 - 表单与表格">HTML 02 - 表单与表格</span>
+            <span class="post-date" title="2017-05-12 00:00:00">2017/05/12</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 前端 "
+           href="/html-01-basics/"
+           data-tag="前端,HTML"
+           data-author="" >
+            <span class="post-title" title="HTML 01 - 基本结构与常用标签">HTML 01 - 基本结构与常用标签</span>
+            <span class="post-date" title="2017-05-05 00:00:00">2017/05/05</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-09-recovery/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 09 - 数据库恢复">数据库 09 - 数据库恢复</span>
+            <span class="post-date" title="2017-04-18 00:00:00">2017/04/18</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-08-transaction/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 08 - 事务与并发控制">数据库 08 - 事务与并发控制</span>
+            <span class="post-date" title="2017-04-08 00:00:00">2017/04/08</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-07-design/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 07 - 数据库设计与ER图">数据库 07 - 数据库设计与ER图</span>
+            <span class="post-date" title="2017-03-28 00:00:00">2017/03/28</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-06-normalization/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 06 - 关系数据理论与范式">数据库 06 - 关系数据理论与范式</span>
+            <span class="post-date" title="2017-03-20 00:00:00">2017/03/20</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-05-security-integrity/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 05 - 安全性与完整性">数据库 05 - 安全性与完整性</span>
+            <span class="post-date" title="2017-03-12 00:00:00">2017/03/12</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-04-sql-advanced/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 04 - SQL进阶（连接、子查询、聚合）">数据库 04 - SQL进阶（连接、子查询、聚合）</span>
+            <span class="post-date" title="2017-03-05 00:00:00">2017/03/05</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-03-sql-basic/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 03 - SQL基础（DDL + DML）">数据库 03 - SQL基础（DDL + DML）</span>
+            <span class="post-date" title="2017-02-25 00:00:00">2017/02/25</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-02-relational-model/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 02 - 关系模型与关系代数">数据库 02 - 关系模型与关系代数</span>
+            <span class="post-date" title="2017-02-18 00:00:00">2017/02/18</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据库 "
+           href="/db-01-intro/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 01 - 绪论与基本概念">数据库 01 - 绪论与基本概念</span>
+            <span class="post-date" title="2017-02-10 00:00:00">2017/02/10</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-14-collections/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 14 - 集合框架与泛型">Java 14 - 集合框架与泛型</span>
+            <span class="post-date" title="2017-01-12 00:00:00">2017/01/12</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-13-network/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 13 - 网络编程">Java 13 - 网络编程</span>
+            <span class="post-date" title="2017-01-05 00:00:00">2017/01/05</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-12-io-serialization/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 12 - 序列化与 IO">Java 12 - 序列化与 IO</span>
+            <span class="post-date" title="2016-12-22 00:00:00">2016/12/22</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-09-sort/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 09 - 排序">数据结构 09 - 排序</span>
+            <span class="post-date" title="2016-12-20 00:00:00">2016/12/20</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-11-exception/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 11 - 异常处理">Java 11 - 异常处理</span>
+            <span class="post-date" title="2016-12-15 00:00:00">2016/12/15</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-08-search/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 08 - 查找">数据结构 08 - 查找</span>
+            <span class="post-date" title="2016-12-12 00:00:00">2016/12/12</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-10-static-final/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 10 - static、final 与包装类">Java 10 - static、final 与包装类</span>
+            <span class="post-date" title="2016-12-07 00:00:00">2016/12/07</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-07-graph-algorithm/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 07 - 图（下）最短路径与最小生成树">数据结构 07 - 图（下）最短路径与最小生成树</span>
+            <span class="post-date" title="2016-12-05 00:00:00">2016/12/05</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-09-lifecycle/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 09 - 对象的生命周期与构造方法">Java 09 - 对象的生命周期与构造方法</span>
+            <span class="post-date" title="2016-11-29 00:00:00">2016/11/29</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-06-graph-traversal/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 06 - 图（上）存储与遍历">数据结构 06 - 图（上）存储与遍历</span>
+            <span class="post-date" title="2016-11-28 00:00:00">2016/11/28</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-08-interface/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 08 - 接口与抽象类">Java 08 - 接口与抽象类</span>
+            <span class="post-date" title="2016-11-22 00:00:00">2016/11/22</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-05-tree/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 05 - 树与二叉树">数据结构 05 - 树与二叉树</span>
+            <span class="post-date" title="2016-11-21 00:00:00">2016/11/21</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-07-inheritance/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 07 - 继承与多态">Java 07 - 继承与多态</span>
+            <span class="post-date" title="2016-11-15 00:00:00">2016/11/15</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-04-string-kmp/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 04 - 串与KMP">数据结构 04 - 串与KMP</span>
+            <span class="post-date" title="2016-11-14 00:00:00">2016/11/14</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-20-tcp-handshake/"
+           data-tag="C,网络"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（二十）——TCP三次握手模拟">C/C++学习总结（二十）——TCP三次握手模拟</span>
+            <span class="post-date" title="2016-11-09 00:00:00">2016/11/09</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-06-library/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 06 - Java 类库与 ArrayList">Java 06 - Java 类库与 ArrayList</span>
+            <span class="post-date" title="2016-11-08 00:00:00">2016/11/08</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-03-stack-queue/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 03 - 栈与队列">数据结构 03 - 栈与队列</span>
+            <span class="post-date" title="2016-11-07 00:00:00">2016/11/07</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-19-socket/"
+           data-tag="C,网络"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十九）——Socket网络编程">C/C++学习总结（十九）——Socket网络编程</span>
+            <span class="post-date" title="2016-11-04 00:00:00">2016/11/04</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-02-linear-list/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 02 - 线性表">数据结构 02 - 线性表</span>
+            <span class="post-date" title="2016-11-02 00:00:00">2016/11/02</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-05-extra-methods/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 05 - 方法进阶与数组操作">Java 05 - 方法进阶与数组操作</span>
+            <span class="post-date" title="2016-11-01 00:00:00">2016/11/01</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-18-stl/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十八）——STL初步">C/C++学习总结（十八）——STL初步</span>
+            <span class="post-date" title="2016-10-31 00:00:00">2016/10/31</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-17-inheritance/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十七）——继承与多态">C/C++学习总结（十七）——继承与多态</span>
+            <span class="post-date" title="2016-10-27 00:00:00">2016/10/27</span>
+        </a>
+        
+        
+        <a  class="All 计算机基础 数据结构 "
+           href="/ds-01-complexity/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 01 - 绪论与算法复杂度">数据结构 01 - 绪论与算法复杂度</span>
+            <span class="post-date" title="2016-10-25 00:00:00">2016/10/25</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-04-methods/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 04 - 对象的行为（方法与封装）">Java 04 - 对象的行为（方法与封装）</span>
+            <span class="post-date" title="2016-10-24 00:00:00">2016/10/24</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-16-constructor/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十六）——构造函数与析构函数">C/C++学习总结（十六）——构造函数与析构函数</span>
+            <span class="post-date" title="2016-10-23 00:00:00">2016/10/23</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-15-class/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十五）——类与对象">C/C++学习总结（十五）——类与对象</span>
+            <span class="post-date" title="2016-10-20 00:00:00">2016/10/20</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-14-cpp-intro/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十四）——C++入门">C/C++学习总结（十四）——C++入门</span>
+            <span class="post-date" title="2016-10-17 00:00:00">2016/10/17</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-03-variables/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 03 - 变量与类型">Java 03 - 变量与类型</span>
+            <span class="post-date" title="2016-10-17 00:00:00">2016/10/17</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-13-file-io/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十三）——文件操作">C/C++学习总结（十三）——文件操作</span>
+            <span class="post-date" title="2016-10-14 00:00:00">2016/10/14</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-12-memory/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十二）——内存管理">C/C++学习总结（十二）——内存管理</span>
+            <span class="post-date" title="2016-10-11 00:00:00">2016/10/11</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-02-oop/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 02 - 面向对象初探">Java 02 - 面向对象初探</span>
+            <span class="post-date" title="2016-10-10 00:00:00">2016/10/10</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-11-struct/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十一）——结构体">C/C++学习总结（十一）——结构体</span>
+            <span class="post-date" title="2016-10-08 00:00:00">2016/10/08</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-10-pointer-2/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十）——指针（下）">C/C++学习总结（十）——指针（下）</span>
+            <span class="post-date" title="2016-10-05 00:00:00">2016/10/05</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 Java "
+           href="/java-01-basics/"
+           data-tag="Java"
+           data-author="" >
+            <span class="post-title" title="Java 01 - 基础入门">Java 01 - 基础入门</span>
+            <span class="post-date" title="2016-10-03 00:00:00">2016/10/03</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-09-pointer-1/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（九）——指针（上）">C/C++学习总结（九）——指针（上）</span>
+            <span class="post-date" title="2016-10-01 00:00:00">2016/10/01</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-08-strings/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（八）——字符串">C/C++学习总结（八）——字符串</span>
+            <span class="post-date" title="2016-09-27 00:00:00">2016/09/27</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-07-arrays/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（七）——数组">C/C++学习总结（七）——数组</span>
+            <span class="post-date" title="2016-09-24 00:00:00">2016/09/24</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-06-functions/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（六）——函数与递归">C/C++学习总结（六）——函数与递归</span>
+            <span class="post-date" title="2016-09-21 00:00:00">2016/09/21</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-05-loops/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（五）——循环">C/C++学习总结（五）——循环</span>
+            <span class="post-date" title="2016-09-18 00:00:00">2016/09/18</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-04-control-flow/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（四）——流程控制">C/C++学习总结（四）——流程控制</span>
+            <span class="post-date" title="2016-09-15 00:00:00">2016/09/15</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-03-operators/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（三）——运算符">C/C++学习总结（三）——运算符</span>
+            <span class="post-date" title="2016-09-12 00:00:00">2016/09/12</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-02-data-types/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（二）——基本数据类型">C/C++学习总结（二）——基本数据类型</span>
+            <span class="post-date" title="2016-09-09 00:00:00">2016/09/09</span>
+        </a>
+        
+        
+        <a  class="All 编程语言 C/C++ "
+           href="/c-cpp-01-start/"
+           data-tag="C,C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（一）——开篇">C/C++学习总结（一）——开篇</span>
+            <span class="post-date" title="2016-09-07 00:00:00">2016/09/07</span>
+        </a>
+        
+        
+        <a  class="All "
+           href="/hello-world"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Hello World">Hello World</span>
+            <span class="post-date" title="2016-09-06 00:00:00">2016/09/06</span>
+        </a>
+        
+        
+        <a  class="All "
+           href="/Update"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Update">Update</span>
+            <span class="post-date" title="2016-09-06 00:00:00">2016/09/06</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="Toggle full screen shortcut key s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-css-05-animation" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">CSS 05 - 过渡与动画</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="全栈开发">全栈开发</a> > 
+            
+            <a  data-rel="全栈开发&lt;---&gt;前端">前端</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color4">CSS</a>
+            
+            <a class="color3">前端</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2026-04-11 15:32:21'>2017-06-26 00:00</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:494</span>
+        
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E6%B8%A1%EF%BC%88transition%EF%BC%89"><span class="toc-text">过渡（transition）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%8A%A8%E5%87%BD%E6%95%B0"><span class="toc-text">缓动函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%EF%BC%88transform%EF%BC%89"><span class="toc-text">变换（transform）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E7%94%BB%EF%BC%88animation%EF%BC%89"><span class="toc-text">动画（animation）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%8A%A8%E7%94%BB%E7%A4%BA%E4%BE%8B"><span class="toc-text">常用动画示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%9D%91"><span class="toc-text">常见坑</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="过渡（transition）"><a href="#过渡（transition）" class="headerlink" title="过渡（transition）"></a>过渡（transition）</h2><p>状态变化时的平滑动画效果：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.button</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: blue;</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">10px</span> <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">transition</span>: background <span class="number">0.3s</span> ease;</span><br><span class="line">    <span class="comment">/* 属性名 持续时间 缓动函数 延迟时间 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.button</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: darkblue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 多个属性 */</span></span><br><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="attribute">transition</span>: width <span class="number">0.3s</span> ease, opacity <span class="number">0.5s</span> linear;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 所有属性 */</span></span><br><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="attribute">transition</span>: all <span class="number">0.3s</span> ease;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="缓动函数"><a href="#缓动函数" class="headerlink" title="缓动函数"></a>缓动函数</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">transition-timing-function</span>: ease;        <span class="comment">/* 慢-快-慢（默认）*/</span></span><br><span class="line"><span class="attribute">transition-timing-function</span>: linear;      <span class="comment">/* 匀速 */</span></span><br><span class="line"><span class="attribute">transition-timing-function</span>: ease-in;     <span class="comment">/* 慢-快 */</span></span><br><span class="line"><span class="attribute">transition-timing-function</span>: ease-out;    <span class="comment">/* 快-慢 */</span></span><br><span class="line"><span class="attribute">transition-timing-function</span>: ease-in-out; <span class="comment">/* 慢-快-慢 */</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="变换（transform）"><a href="#变换（transform）" class="headerlink" title="变换（transform）"></a>变换（transform）</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="comment">/* 位移 */</span></span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">50px</span>);</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-<span class="number">20px</span>);</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translate</span>(<span class="number">50px</span>, -<span class="number">20px</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 旋转 */</span></span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">rotate</span>(<span class="number">45deg</span>);</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">rotate</span>(-<span class="number">90deg</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 缩放 */</span></span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">1.5</span>);        <span class="comment">/* 等比放大1.5倍 */</span></span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">2</span>, <span class="number">0.5</span>);     <span class="comment">/* 宽2倍，高0.5倍 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 倾斜 */</span></span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">skew</span>(<span class="number">10deg</span>, <span class="number">5deg</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 组合（从右到左执行）*/</span></span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translate</span>(<span class="number">50px</span>, <span class="number">0</span>) <span class="built_in">rotate</span>(<span class="number">45deg</span>) <span class="built_in">scale</span>(<span class="number">1.2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 变换基点（默认 center center）*/</span></span><br><span class="line">    <span class="attribute">transform-origin</span>: top left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动画（animation）"><a href="#动画（animation）" class="headerlink" title="动画（animation）"></a>动画（animation）</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 定义关键帧 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> fadeIn &#123;</span><br><span class="line">    <span class="selector-tag">from</span> &#123; <span class="attribute">opacity</span>: <span class="number">0</span>; &#125;</span><br><span class="line">    <span class="selector-tag">to</span>   &#123; <span class="attribute">opacity</span>: <span class="number">1</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@keyframes</span> bounce &#123;</span><br><span class="line">    <span class="number">0%</span>   &#123; <span class="attribute">transform</span>: <span class="built_in">translateY</span>(<span class="number">0</span>); &#125;</span><br><span class="line">    <span class="number">50%</span>  &#123; <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-<span class="number">30px</span>); &#125;</span><br><span class="line">    <span class="number">100%</span> &#123; <span class="attribute">transform</span>: <span class="built_in">translateY</span>(<span class="number">0</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 应用动画 */</span></span><br><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="attribute">animation</span>: fadeIn <span class="number">1s</span> ease;</span><br><span class="line">    <span class="comment">/* 名称 持续时间 缓动 延迟 次数 方向 填充模式 */</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">animation-name</span>: bounce;</span><br><span class="line">    <span class="attribute">animation-duration</span>: <span class="number">0.5s</span>;</span><br><span class="line">    <span class="attribute">animation-timing-function</span>: ease;</span><br><span class="line">    <span class="attribute">animation-delay</span>: <span class="number">0.2s</span>;</span><br><span class="line">    <span class="attribute">animation-iteration-count</span>: infinite;  <span class="comment">/* 无限循环 */</span></span><br><span class="line">    <span class="attribute">animation-direction</span>: alternate;       <span class="comment">/* 来回播放 */</span></span><br><span class="line">    <span class="attribute">animation-fill-mode</span>: forwards;        <span class="comment">/* 保持最终状态 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 暂停动画 */</span></span><br><span class="line"><span class="selector-class">.box</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">animation-play-state</span>: paused;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用动画示例"><a href="#常用动画示例" class="headerlink" title="常用动画示例"></a>常用动画示例</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 旋转加载 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> spin &#123;</span><br><span class="line">    <span class="selector-tag">from</span> &#123; <span class="attribute">transform</span>: <span class="built_in">rotate</span>(<span class="number">0deg</span>); &#125;</span><br><span class="line">    <span class="selector-tag">to</span>   &#123; <span class="attribute">transform</span>: <span class="built_in">rotate</span>(<span class="number">360deg</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.loader</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">40px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">40px</span>;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">4px</span> solid <span class="number">#f3f3f3</span>;</span><br><span class="line">    <span class="attribute">border-top</span>: <span class="number">4px</span> solid <span class="number">#3498db</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">animation</span>: spin <span class="number">1s</span> linear infinite;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 淡入上移 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> fadeInUp &#123;</span><br><span class="line">    <span class="selector-tag">from</span> &#123;</span><br><span class="line">        <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line">        <span class="attribute">transform</span>: <span class="built_in">translateY</span>(<span class="number">30px</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="selector-tag">to</span> &#123;</span><br><span class="line">        <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">        <span class="attribute">transform</span>: <span class="built_in">translateY</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见坑"><a href="#常见坑" class="headerlink" title="常见坑"></a>常见坑</h2><ul>
+<li><code>transition</code> 需要有<strong>起始和结束状态</strong>才能触发，动画是主动播放</li>
+<li><code>transform</code> 不会影响文档流，元素位置不变，只是视觉上移动</li>
+<li><code>transform: translate(-50%, -50%)</code> 配合绝对定位实现精确居中</li>
+<li>尽量用 <code>transform</code> 和 <code>opacity</code> 做动画，这两个属性由 GPU 加速，性能最好</li>
+</ul>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 luzhongxiux@gmail.com </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2025 ZeoxCode
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="Toggle full screen shortcut key s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
