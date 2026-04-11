@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>数据库 06 - 关系数据理论与范式 | ZeoxCode</title>
+  <meta name="keywords" content=" 数据库 , SQL ">
+  <meta name="description" content="数据库 06 - 关系数据理论与范式 | ZeoxCode">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="故障类型123事务故障：单个事务内部错误（除零、违反约束）→ 回滚该事务系统故障：操作系统崩溃、断电 → 重启后恢复内存中未写入的数据介质故障：磁盘损坏 → 需要备份+日志重做  日志（Log）记录事务对数据库的每次修改： 123&lt;T1, start&gt;&lt;T1, A, 100, 90&gt;    -- 事务T1将A从100改为90&lt;T1, commit&gt;  先写日志原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库 09 - 数据库恢复">
+<meta property="og:url" content="http://example.com/db-09-recovery/index.html">
+<meta property="og:site_name" content="ZeoxCode">
+<meta property="og:description" content="故障类型123事务故障：单个事务内部错误（除零、违反约束）→ 回滚该事务系统故障：操作系统崩溃、断电 → 重启后恢复内存中未写入的数据介质故障：磁盘损坏 → 需要备份+日志重做  日志（Log）记录事务对数据库的每次修改： 123&lt;T1, start&gt;&lt;T1, A, 100, 90&gt;    -- 事务T1将A从100改为90&lt;T1, commit&gt;  先写日志原">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-04-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-11T06:53:28.143Z">
+<meta property="article:author" content="ZeoxCode">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/logo.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-light.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/"
+   class="avatar_target">
+    <img class="avatar"
+         src="/img/avatar.jpg"/>
+</a>
+<div class="author">
+    <span>ZeoxCode</span>
+</div>
+
+<div class="icon">
+    
+        
+            <a title="rss"
+               href="/atom.xml"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-rss"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+            <a title="github"
+               href="https://github.com/ZeoxCode"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-github"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            <a title="email"
+               href="mailto:luzhongxiux@gmail.com"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-email"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+</div>
+
+
+
+
+
+<ul>
+    <li>
+        <div class="all active" data-rel="All">All
+            
+                <small>(40)</small>
+            
+        </div>
+    </li>
+    
+        
+            
+                
+    <li>
+        <div data-rel="全栈开发">
+            <i class="fold iconfont icon-right"></i>
+            全栈开发
+            <small>(20)</small>
+        </div>
+        
+            <ul class="sub hide">
+                
+                    
+    <li>
+        <div data-rel="全栈开发&lt;---&gt;后端">
+            
+            后端
+            <small>(20)</small>
+        </div>
+        
+    </li>
+
+                
+            </ul>
+        
+    </li>
+
+            
+        
+    
+        
+            
+        
+    
+        
+            
+                
+    <li>
+        <div data-rel="数据结构">
+            
+            数据结构
+            <small>(9)</small>
+        </div>
+        
+    </li>
+
+            
+        
+    
+        
+            
+                
+    <li>
+        <div data-rel="数据库">
+            
+            数据库
+            <small>(9)</small>
+        </div>
+        
+    </li>
+
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+        
+            
+            
+            
+    </div>
+    <div>
+        
+        
+    </div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="40">
+<input type="hidden" id="yelog_site_word_count" value="11.2k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="search shortcut key i"></i>
+            <div class="right-title">All</div>
+            <i class="iconfont icon-file-tree" data-title="switch to outline view shortcut key w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="return"></i>
+            <input id="local-search-input" autocomplete="off"/>
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="case sensitive"></i>
+            <i class="iconfont icon-tag" data-title="label"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">outline</div>
+            <i class="iconfont icon-list" data-title="switch to article list"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>数据结构</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>数据库</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>网络</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C++</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>SQL</a>
+            </li>
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        
+        <a  class="All 数据库 "
+           href="/db-09-recovery/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 09 - 数据库恢复">数据库 09 - 数据库恢复</span>
+            <span class="post-date" title="2017-04-18 00:00:00">2017/04/18</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-08-transaction/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 08 - 事务与并发控制">数据库 08 - 事务与并发控制</span>
+            <span class="post-date" title="2017-04-08 00:00:00">2017/04/08</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-07-design/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 07 - 数据库设计与ER图">数据库 07 - 数据库设计与ER图</span>
+            <span class="post-date" title="2017-03-28 00:00:00">2017/03/28</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-06-normalization/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 06 - 关系数据理论与范式">数据库 06 - 关系数据理论与范式</span>
+            <span class="post-date" title="2017-03-20 00:00:00">2017/03/20</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-05-security-integrity/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 05 - 安全性与完整性">数据库 05 - 安全性与完整性</span>
+            <span class="post-date" title="2017-03-12 00:00:00">2017/03/12</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-04-sql-advanced/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 04 - SQL进阶（连接、子查询、聚合）">数据库 04 - SQL进阶（连接、子查询、聚合）</span>
+            <span class="post-date" title="2017-03-05 00:00:00">2017/03/05</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-03-sql-basic/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 03 - SQL基础（DDL + DML）">数据库 03 - SQL基础（DDL + DML）</span>
+            <span class="post-date" title="2017-02-25 00:00:00">2017/02/25</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-02-relational-model/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 02 - 关系模型与关系代数">数据库 02 - 关系模型与关系代数</span>
+            <span class="post-date" title="2017-02-18 00:00:00">2017/02/18</span>
+        </a>
+        
+        
+        <a  class="All 数据库 "
+           href="/db-01-intro/"
+           data-tag="数据库,SQL"
+           data-author="" >
+            <span class="post-title" title="数据库 01 - 绪论与基本概念">数据库 01 - 绪论与基本概念</span>
+            <span class="post-date" title="2017-02-10 00:00:00">2017/02/10</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-09-sort/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 09 - 排序">数据结构 09 - 排序</span>
+            <span class="post-date" title="2016-12-20 00:00:00">2016/12/20</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-08-search/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 08 - 查找">数据结构 08 - 查找</span>
+            <span class="post-date" title="2016-12-12 00:00:00">2016/12/12</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-07-graph-algorithm/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 07 - 图（下）最短路径与最小生成树">数据结构 07 - 图（下）最短路径与最小生成树</span>
+            <span class="post-date" title="2016-12-05 00:00:00">2016/12/05</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-06-graph-traversal/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 06 - 图（上）存储与遍历">数据结构 06 - 图（上）存储与遍历</span>
+            <span class="post-date" title="2016-11-28 00:00:00">2016/11/28</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-05-tree/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 05 - 树与二叉树">数据结构 05 - 树与二叉树</span>
+            <span class="post-date" title="2016-11-21 00:00:00">2016/11/21</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-04-string-kmp/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 04 - 串与KMP">数据结构 04 - 串与KMP</span>
+            <span class="post-date" title="2016-11-14 00:00:00">2016/11/14</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-20-tcp-handshake/"
+           data-tag="C,网络"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（二十）——TCP三次握手模拟">C/C++学习总结（二十）——TCP三次握手模拟</span>
+            <span class="post-date" title="2016-11-09 00:00:00">2016/11/09</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-03-stack-queue/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 03 - 栈与队列">数据结构 03 - 栈与队列</span>
+            <span class="post-date" title="2016-11-07 00:00:00">2016/11/07</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-19-socket/"
+           data-tag="C,网络"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十九）——Socket网络编程">C/C++学习总结（十九）——Socket网络编程</span>
+            <span class="post-date" title="2016-11-04 00:00:00">2016/11/04</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-02-linear-list/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 02 - 线性表">数据结构 02 - 线性表</span>
+            <span class="post-date" title="2016-11-02 00:00:00">2016/11/02</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-18-stl/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十八）——STL初步">C/C++学习总结（十八）——STL初步</span>
+            <span class="post-date" title="2016-10-31 00:00:00">2016/10/31</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-17-inheritance/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十七）——继承与多态">C/C++学习总结（十七）——继承与多态</span>
+            <span class="post-date" title="2016-10-27 00:00:00">2016/10/27</span>
+        </a>
+        
+        
+        <a  class="All 数据结构 "
+           href="/ds-01-complexity/"
+           data-tag="C++,数据结构"
+           data-author="" >
+            <span class="post-title" title="数据结构 01 - 绪论与算法复杂度">数据结构 01 - 绪论与算法复杂度</span>
+            <span class="post-date" title="2016-10-25 00:00:00">2016/10/25</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-16-constructor/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十六）——构造函数与析构函数">C/C++学习总结（十六）——构造函数与析构函数</span>
+            <span class="post-date" title="2016-10-23 00:00:00">2016/10/23</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-15-class/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十五）——类与对象">C/C++学习总结（十五）——类与对象</span>
+            <span class="post-date" title="2016-10-20 00:00:00">2016/10/20</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-14-cpp-intro/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十四）——C++入门">C/C++学习总结（十四）——C++入门</span>
+            <span class="post-date" title="2016-10-17 00:00:00">2016/10/17</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-13-file-io/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十三）——文件操作">C/C++学习总结（十三）——文件操作</span>
+            <span class="post-date" title="2016-10-14 00:00:00">2016/10/14</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-12-memory/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十二）——内存管理">C/C++学习总结（十二）——内存管理</span>
+            <span class="post-date" title="2016-10-11 00:00:00">2016/10/11</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-11-struct/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十一）——结构体">C/C++学习总结（十一）——结构体</span>
+            <span class="post-date" title="2016-10-08 00:00:00">2016/10/08</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-10-pointer-2/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（十）——指针（下）">C/C++学习总结（十）——指针（下）</span>
+            <span class="post-date" title="2016-10-05 00:00:00">2016/10/05</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-09-pointer-1/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（九）——指针（上）">C/C++学习总结（九）——指针（上）</span>
+            <span class="post-date" title="2016-10-01 00:00:00">2016/10/01</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-08-strings/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（八）——字符串">C/C++学习总结（八）——字符串</span>
+            <span class="post-date" title="2016-09-27 00:00:00">2016/09/27</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-07-arrays/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（七）——数组">C/C++学习总结（七）——数组</span>
+            <span class="post-date" title="2016-09-24 00:00:00">2016/09/24</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-06-functions/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（六）——函数与递归">C/C++学习总结（六）——函数与递归</span>
+            <span class="post-date" title="2016-09-21 00:00:00">2016/09/21</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-05-loops/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（五）——循环">C/C++学习总结（五）——循环</span>
+            <span class="post-date" title="2016-09-18 00:00:00">2016/09/18</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-04-control-flow/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（四）——流程控制">C/C++学习总结（四）——流程控制</span>
+            <span class="post-date" title="2016-09-15 00:00:00">2016/09/15</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-03-operators/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（三）——运算符">C/C++学习总结（三）——运算符</span>
+            <span class="post-date" title="2016-09-12 00:00:00">2016/09/12</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-02-data-types/"
+           data-tag="C"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（二）——基本数据类型">C/C++学习总结（二）——基本数据类型</span>
+            <span class="post-date" title="2016-09-09 00:00:00">2016/09/09</span>
+        </a>
+        
+        
+        <a  class="All 全栈开发 后端 "
+           href="/c-cpp-01-start/"
+           data-tag="C,C++"
+           data-author="" >
+            <span class="post-title" title="C/C++学习总结（一）——开篇">C/C++学习总结（一）——开篇</span>
+            <span class="post-date" title="2016-09-07 00:00:00">2016/09/07</span>
+        </a>
+        
+        
+        <a  class="All "
+           href="/Update"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Update">Update</span>
+            <span class="post-date" title="2016-09-06 00:00:00">2016/09/06</span>
+        </a>
+        
+        
+        <a  class="All "
+           href="/hello-world"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Hello World">Hello World</span>
+            <span class="post-date" title="2016-09-06 00:00:00">2016/09/06</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="Toggle full screen shortcut key s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-db-06-normalization" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">数据库 06 - 关系数据理论与范式</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="数据库">数据库</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color4">数据库</a>
+            
+            <a class="color4">SQL</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2026-04-11 14:52:45'>2017-03-20 00:00</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:397</span>
+        
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E4%BE%9D%E8%B5%96"><span class="toc-text">函数依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E7%BA%A7%E8%8C%83%E5%BC%8F"><span class="toc-text">各级范式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1NF"><span class="toc-text">1NF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2NF"><span class="toc-text">2NF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3NF"><span class="toc-text">3NF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BCNF"><span class="toc-text">BCNF</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%9D%91"><span class="toc-text">常见坑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8%E4%BE%8B%E9%A2%98"><span class="toc-text">经典例题</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="函数依赖"><a href="#函数依赖" class="headerlink" title="函数依赖"></a>函数依赖</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">X → Y：X 函数决定 Y，即 X 的值能唯一确定 Y 的值</span><br><span class="line"></span><br><span class="line">完全函数依赖：X → Y，且X的任何真子集都不能决定Y</span><br><span class="line">部分函数依赖：X → Y，但X的某个真子集也能决定Y</span><br><span class="line">传递函数依赖：X → Y，Y → Z，且Y不决定X，则X传递依赖Z</span><br></pre></td></tr></table></figure>
+
+<h2 id="各级范式"><a href="#各级范式" class="headerlink" title="各级范式"></a>各级范式</h2><h3 id="1NF"><a href="#1NF" class="headerlink" title="1NF"></a>1NF</h3><p>所有属性都是<strong>原子的</strong>，不可再分。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">违反1NF的例子：</span><br><span class="line">联系方式字段里存 &quot;138xxxx,010-xxxx&quot;（多值）</span><br></pre></td></tr></table></figure>
+
+<h3 id="2NF"><a href="#2NF" class="headerlink" title="2NF"></a>2NF</h3><p>在1NF基础上，<strong>非主属性完全依赖于主键</strong>（消除部分依赖）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">表：SC(Sno, Cno, Grade, Sname)</span><br><span class="line">主键：(Sno, Cno)</span><br><span class="line">问题：Sname 只依赖 Sno，部分依赖主键 → 违反2NF</span><br><span class="line"></span><br><span class="line">拆分：</span><br><span class="line">SC(Sno, Cno, Grade)</span><br><span class="line">Student(Sno, Sname)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3NF"><a href="#3NF" class="headerlink" title="3NF"></a>3NF</h3><p>在2NF基础上，<strong>非主属性不传递依赖于主键</strong>（消除传递依赖）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">表：Student(Sno, Sdept, Dname)</span><br><span class="line">Sno → Sdept → Dname（传递依赖）→ 违反3NF</span><br><span class="line"></span><br><span class="line">拆分：</span><br><span class="line">Student(Sno, Sdept)</span><br><span class="line">Dept(Sdept, Dname)</span><br></pre></td></tr></table></figure>
+
+<h3 id="BCNF"><a href="#BCNF" class="headerlink" title="BCNF"></a>BCNF</h3><p>所有决定属性的左部都是<strong>候选键</strong>（比3NF更严格）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">大多数情况下，达到3NF就够了</span><br><span class="line">BCNF消除了主属性对候选键的部分/传递依赖</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见坑"><a href="#常见坑" class="headerlink" title="常见坑"></a>常见坑</h2><ul>
+<li>2NF只对<strong>复合主键</strong>有意义，单属性主键自动满足2NF</li>
+<li>规范化越高，冗余越少，但<strong>查询时join越多</strong>，性能下降</li>
+<li>实际工程中为了性能，有时会<strong>故意反范式化</strong>保留冗余</li>
+</ul>
+<h2 id="经典例题"><a href="#经典例题" class="headerlink" title="经典例题"></a>经典例题</h2><p><strong>判断 SLC(Sno, Sdept, Sloc, Cno, Grade) 属于第几范式：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">主键：(Sno, Cno)</span><br><span class="line">函数依赖：</span><br><span class="line">  Sno → Sdept</span><br><span class="line">  Sdept → Sloc（传递：Sno → Sloc）</span><br><span class="line">  (Sno, Cno) → Grade</span><br><span class="line"></span><br><span class="line">Sdept、Sloc 部分依赖主键 → 不满足2NF → 属于1NF</span><br></pre></td></tr></table></figure>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 luzhongxiux@gmail.com </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2025 ZeoxCode
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="Toggle full screen shortcut key s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
