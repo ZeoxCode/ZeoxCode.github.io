@@ -2,8 +2,8 @@
 title: C/C++学习总结（十九）——Socket网络编程
 date: 2016-11-04
 categories:
-  - 全栈开发
-  - 后端
+  - 编程语言
+  - C/C++
 tags:
   - C
   - 网络

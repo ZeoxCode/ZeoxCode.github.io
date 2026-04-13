@@ -2,8 +2,8 @@
 title: C/C++学习总结（二十）——TCP三次握手模拟
 date: 2016-11-09
 categories:
-  - 全栈开发
-  - 后端
+  - 编程语言
+  - C/C++
 tags:
   - C
   - 网络

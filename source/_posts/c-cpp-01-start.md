@@ -2,8 +2,8 @@
 title: C/C++学习总结（一）——开篇
 date: 2016-09-07
 categories:
-  - 全栈开发
-  - 后端
+  - 编程语言
+  - C/C++
 tags:
   - C
   - C++
