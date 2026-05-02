@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投资组合 · ZeoxCode</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1c2128;
+      --border:   #30363d;
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --green:    #3fb950;
+      --red:      #f85149;
+      --blue:     #58a6ff;
+      --yellow:   #e3b341;
+      --purple:   #bc8cff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .page-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+    .page-sub   { color: var(--muted); font-size: 13px; margin-top: 3px; }
+
+    /* ── Summary grid ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 0;
+    }
+    .summary-grid > div { padding-right: 32px; }
+    .summary-grid > div + div {
+      border-left: 1px solid var(--border);
+      padding-left: 32px;
+    }
+    @media (max-width: 680px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+      .summary-grid > div + div { border-left: none; padding-left: 0; }
+    }
+
+    .s-value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+    .s-sub   { font-size: 14px; font-weight: 500; margin-top: 2px; }
+    .s-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .up   { color: var(--green); }
+    .down { color: var(--red);   }
+
+    /* ── Charts ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 5fr 3fr;
+      gap: 16px;
+    }
+    @media (max-width: 720px) { .charts-grid { grid-template-columns: 1fr; } }
+
+    .chart-wrap { position: relative; height: 280px; }
+
+    /* ── Time range tabs ── */
+    .range-tabs { display: flex; gap: 4px; }
+    .rtab {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: transparent;
+      transition: all 0.12s;
+    }
+    .rtab:hover  { color: var(--text); }
+    .rtab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+    /* ── Holdings section ── */
+    .holdings-cols {
+      display: grid;
+      grid-template-columns: minmax(140px,2fr) 90px 90px 90px 110px 120px;
+      gap: 8px;
+      padding: 6px 0 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .holdings-cols span {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .holdings-cols span:not(:first-child) { text-align: right; }
+
+    .group-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0 8px;
+    }
+    .group-head + .group-head { padding-top: 28px; }
+    .group-name {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .group-stat { font-size: 13px; font-weight: 600; }
+    .group-pct  { font-size: 12px; margin-left: 8px; }
+
+    .h-row {
+      display: grid;
+      grid-template-columns: minmax(140px,2fr) 90px 90px 90px 110px 120px;
+      gap: 8px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
+      align-items: center;
+    }
+    .h-name   { font-weight: 500; font-size: 14px; }
+    .h-symbol { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .h-r { text-align: right; font-variant-numeric: tabular-nums; }
+    .h-pnl { text-align: right; }
+    .h-pnl-abs  { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 500; }
+    .h-pnl-pct  { font-size: 11px; margin-top: 1px; }
+
+    @media (max-width: 860px) {
+      .holdings-cols { grid-template-columns: 2fr 90px 90px 120px; }
+      .holdings-cols .hc-cost, .holdings-cols .hc-mktval { display: none; }
+      .h-row { grid-template-columns: 2fr 90px 90px 120px; }
+      .h-row .h-cost, .h-row .h-mktval { display: none; }
+    }
+
+    /* ── Transaction list ── */
+    .tx-head {
+      display: grid;
+      grid-template-columns: 95px 55px minmax(100px,1fr) 90px 100px auto;
+      gap: 12px;
+      padding: 6px 0 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tx-row {
+      display: grid;
+      grid-template-columns: 95px 55px minmax(100px,1fr) 90px 100px auto;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(48,54,61,0.4);
+      align-items: center;
+      font-size: 13px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag-buy  { background: rgba(63,185,80,0.15);  color: var(--green); }
+    .tag-sell { background: rgba(248,81,73,0.15);   color: var(--red);   }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.12s;
+      white-space: nowrap;
+    }
+    .btn:hover    { opacity: 0.82; }
+    .btn-primary  { background: var(--blue);    color: #fff; }
+    .btn-ghost    { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-danger   { background: transparent; border: 1px solid var(--border); color: var(--red); }
+    .btn-sm       { padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+    .btn-row      { display: flex; gap: 8px; }
+
+    /* ── Modal ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: 20px;
+    }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      width: 100%; max-width: 500px;
+    }
+    .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 22px; }
+
+    .fg { margin-bottom: 16px; }
+    .fl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    .fi, .fs {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.12s;
+      font-family: inherit;
+    }
+    .fi:focus, .fs:focus { border-color: var(--blue); }
+    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── Loading / setup ── */
+    #loading {
+      height: 80vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 14px; color: var(--muted);
+    }
+    .spinner {
+      width: 34px; height: 34px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #token-setup {
+      max-width: 500px; margin: 80px auto;
+      text-align: center;
+    }
+    #token-setup h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    #token-setup p  { color: var(--muted); font-size: 13px; line-height: 1.75; margin-bottom: 24px; }
+    #token-setup a  { color: var(--blue); }
+
+    /* ── Misc ── */
+    .flex { display: flex; align-items: center; }
+    .between { justify-content: space-between; }
+    .gap8 { gap: 8px; }
+    .text-muted { color: var(--muted); }
+    .text-sm    { font-size: 12px; }
+    .mt4  { margin-top: 4px; }
+    .empty { text-align: center; padding: 32px 0; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <span>正在加载…</span>
+  </div>
+
+  <!-- Token setup (first visit) -->
+  <div id="token-setup" style="display:none">
+    <div style="font-size:40px;margin-bottom:16px">🔑</div>
+    <h2>配置 GitHub Token</h2>
+    <p>
+      持仓数据存储在你的私有仓库 <strong>ZeoxCode/ZeoxCode.github.io</strong> 中的 holdings.json。<br>
+      请前往
+      <a href="https://github.com/settings/tokens" target="_blank">GitHub → Settings → Developer settings → Fine-grained tokens</a>
+      生成一个对该仓库有 <strong>Contents 读写</strong> 权限的 Token，粘贴到下方。<br><br>
+      Token 只存在你的浏览器 localStorage 中，不会上传任何服务器。
+    </p>
+    <div class="fg">
+      <input class="fi" id="token-input" type="password" placeholder="github_pat_xxxxxxxx…" autocomplete="off">
+    </div>
+    <button class="btn btn-primary" onclick="saveToken()">确认并开始</button>
+  </div>
+
+  <!-- Main -->
+  <div id="main" style="display:none">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">投资组合</div>
+        <div class="page-sub" id="updated-at">--</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-sm" onclick="openModal()">+ 录入交易</button>
+        <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ 刷新行情</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearToken()" title="重置 Token">⚙</button>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="card">
+      <div class="summary-grid">
+        <div>
+          <div class="s-label">总资产（CNY）</div>
+          <div class="s-value" id="s-total">--</div>
+        </div>
+        <div>
+          <div class="s-label">今日盈亏</div>
+          <div class="s-sub" id="s-today">--</div>
+        </div>
+        <div>
+          <div class="s-label">持仓浮盈</div>
+          <div class="s-sub" id="s-pnl">--</div>
+        </div>
+        <div>
+          <div class="s-label">总收益率</div>
+          <div class="s-sub" id="s-rate">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="card">
+        <div class="flex between" style="margin-bottom:14px">
+          <div class="label" style="margin-bottom:0">历史走势</div>
+          <div class="range-tabs">
+            <button class="rtab active" data-range="1mo"  onclick="setRange('1mo')">1月</button>
+            <button class="rtab"        data-range="3mo"  onclick="setRange('3mo')">3月</button>
+            <button class="rtab"        data-range="6mo"  onclick="setRange('6mo')">6月</button>
+            <button class="rtab"        data-range="1y"   onclick="setRange('1y')">1年</button>
+            <button class="rtab"        data-range="2y"   onclick="setRange('2y')">2年</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="label">资产分布</div>
+        <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Holdings -->
+    <div class="card">
+      <div class="label">持仓明细</div>
+      <div id="holdings-root"></div>
+    </div>
+
+    <!-- Transactions -->
+    <div class="card">
+      <div class="flex between" style="margin-bottom:0">
+        <div class="label" style="margin-bottom:0">交易记录</div>
+        <button class="btn btn-ghost btn-sm" onclick="toggleTx()">展开 / 收起</button>
+      </div>
+      <div id="tx-panel" style="display:none;margin-top:16px">
+        <div id="tx-list"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /wrap -->
+
+<!-- Transaction Modal -->
+<div id="modal" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title">录入交易</div>
+
+    <div class="fg">
+      <label class="fl">交易类型</label>
+      <select class="fs" id="m-type">
+        <option value="buy">买入</option>
+        <option value="sell">卖出</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <label class="fl">资产类别</label>
+      <select class="fs" id="m-cat" onchange="onCatChange()">
+        <option value="a_stock">A 股</option>
+        <option value="us_stock">美 股</option>
+        <option value="fund">基金（场外开放式）</option>
+        <option value="crypto">加密货币</option>
+      </select>
+    </div>
+
+    <div class="frow">
+      <div class="fg">
+        <label class="fl">资产代码</label>
+        <input class="fi" id="m-sym" placeholder="">
+        <div class="hint" id="m-hint"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">名称（自定义）</label>
+        <input class="fi" id="m-name" placeholder="如 贵州茅台">
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="fg">
+        <label class="fl">交易日期</label>
+        <input class="fi" id="m-date" type="date">
+      </div>
+      <div class="fg">
+        <label class="fl">货币</label>
+        <select class="fs" id="m-cur">
+          <option value="CNY">CNY 人民币</option>
+          <option value="USD">USD 美元</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="fg">
+        <label class="fl" id="m-qty-label">数量</label>
+        <input class="fi" id="m-qty" type="number" min="0" step="any" placeholder="0">
+      </div>
+      <div class="fg">
+        <label class="fl">成交均价（单价）</label>
+        <input class="fi" id="m-price" type="number" min="0" step="any" placeholder="0.00">
+      </div>
+    </div>
+
+    <div class="flex between" style="margin-top:20px;gap:8px">
+      <button class="btn btn-danger btn-sm" id="m-del" style="display:none" onclick="deleteTx()">删除此记录</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="submitTx()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG
+   ═══════════════════════════════════════════════════════════════ */
+const GH_OWNER    = 'ZeoxCode';
+const GH_REPO     = 'ZeoxCode.github.io';
+const GH_PATH     = 'holdings.json';
+const CORS_PROXY  = 'https://corsproxy.io/?';
+const RANGE_DAYS  = { '1mo': 30, '3mo': 90, '6mo': 180, '1y': 365, '2y': 730 };
+const CAT_LABEL   = { a_stock: 'A 股', us_stock: '美 股', fund: '基 金', crypto: '加密货币' };
+const CAT_ORDER   = ['a_stock', 'us_stock', 'fund', 'crypto'];
+const PALETTE     = ['#58a6ff','#3fb950','#e3b341','#bc8cff','#f78166',
+                     '#79c0ff','#56d364','#ffa657','#d2a8ff','#ff7b72'];
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════════ */
+const S = {
+  token:      null,
+  fileSha:    null,
+  txList:     [],           // all transactions
+  cache:      {},           // { symbol: { priceMap, currency, current, prevClose } }
+  usdcny:     7.25,
+  range:      '1mo',
+  lineChart:  null,
+  donutChart: null,
+  editId:     null,         // id of tx being edited
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════════════════ */
+const fmt   = (n, d = 2) => new Intl.NumberFormat('zh-CN', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
+const cny   = n  => '¥ ' + fmt(n);
+const pct   = n  => (n >= 0 ? '+' : '') + fmt(n, 2) + '%';
+const uid   = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const today = () => new Date().toISOString().slice(0, 10);
+
+function nDaysAgo(n) {
+  const d = new Date(); d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
+
+function dateRange(n) {
+  return Array.from({ length: n }, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (n - 1 - i));
+    return d.toISOString().slice(0, 10);
+  });
+}
+
+function $id(id)  { return document.getElementById(id); }
+function show(id) { $id(id).style.display = 'block'; }
+function hide(id) { $id(id).style.display = 'none';  }
+
+/* ═══════════════════════════════════════════════════════════════
+   TOKEN
+   ═══════════════════════════════════════════════════════════════ */
+function saveToken() {
+  const t = $id('token-input').value.trim();
+  if (!t) return alert('请输入 Token');
+  localStorage.setItem('pf_token', t);
+  S.token = t;
+  hide('token-setup');
+  show('loading');
+  init();
+}
+function clearToken() {
+  if (!confirm('清除 Token 后需重新输入，确认？')) return;
+  localStorage.removeItem('pf_token');
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GITHUB API
+   ═══════════════════════════════════════════════════════════════ */
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    headers: { Authorization: `Bearer ${S.token}`, Accept: 'application/vnd.github+json' },
+  });
+  if (!r.ok) throw new Error(`GitHub ${r.status}: ${(await r.json().catch(() => ({}))).message || ''}`);
+  return r.json();
+}
+
+async function ghPut(path, content, sha, message) {
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${S.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`GitHub PUT ${r.status}`);
+  return (await r.json()).content.sha;
+}
+
+async function loadData() {
+  try {
+    const d = await ghGet(GH_PATH);
+    S.fileSha = d.sha;
+    const parsed = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g, '')))));
+    S.txList = parsed.transactions || [];
+  } catch (e) {
+    if (e.message.includes('404')) {
+      S.txList  = [];
+      S.fileSha = await ghPut(GH_PATH, JSON.stringify({ transactions: [] }, null, 2), null, 'init: create holdings.json');
+    } else throw e;
+  }
+}
+
+async function saveData() {
+  const json = JSON.stringify({ transactions: S.txList }, null, 2);
+  S.fileSha  = await ghPut(GH_PATH, json, S.fileSha, `portfolio: update ${today()}`);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICE APIs
+   ═══════════════════════════════════════════════════════════════ */
+async function fetchYahoo(symbol, rangeDays) {
+  const rangeStr = rangeDays <= 30 ? '1mo' : rangeDays <= 90 ? '3mo' : rangeDays <= 180 ? '6mo' : rangeDays <= 365 ? '1y' : '2y';
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=${rangeStr}&includePrePost=false`;
+  const r   = await fetch(CORS_PROXY + encodeURIComponent(url));
+  if (!r.ok) throw new Error(`Yahoo ${r.status}`);
+  const d   = await r.json();
+  const res = d?.chart?.result?.[0];
+  if (!res) throw new Error(`${symbol} 无数据`);
+
+  const ts  = res.timestamp || [];
+  const cls = res.indicators?.quote?.[0]?.close || [];
+  const map = {};
+  ts.forEach((t, i) => { if (cls[i] != null) map[new Date(t * 1000).toISOString().slice(0, 10)] = cls[i]; });
+
+  return {
+    priceMap:  map,
+    currency:  res.meta?.currency || 'USD',
+    current:   res.meta?.regularMarketPrice,
+    prevClose: res.meta?.chartPreviousClose,
+  };
+}
+
+async function fetchCrypto(id, rangeDays) {
+  const days = Math.min(rangeDays, 730);
+  const [curR, histR] = await Promise.all([
+    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=cny&include_24hr_change=true`),
+    fetch(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=cny&days=${days}&interval=daily`),
+  ]);
+  const cur  = await curR.json();
+  const hist = await histR.json();
+  const map  = {};
+  (hist.prices || []).forEach(([ts, p]) => { map[new Date(ts).toISOString().slice(0, 10)] = p; });
+  const curPrice  = cur[id]?.cny;
+  const change24h = cur[id]?.cny_24h_change || 0;
+  return {
+    priceMap:  map,
+    currency:  'CNY',
+    current:   curPrice,
+    prevClose: curPrice / (1 + change24h / 100),
+  };
+}
+
+async function fetchFund(code, rangeDays) {
+  // Current estimate
+  const estUrl = `https://fundgz.1234567.com.cn/js/${code}.js`;
+  const estR   = await fetch(CORS_PROXY + encodeURIComponent(estUrl));
+  const estTxt = await estR.text();
+  const estM   = estTxt.match(/jsonpgz\((\{[\s\S]*?\})\)/);
+  if (!estM) throw new Error(`基金 ${code} 解析失败`);
+  const est = JSON.parse(estM[1]);
+
+  // History
+  const start   = nDaysAgo(rangeDays + 10);
+  const end     = today();
+  const histUrl = `https://api.fund.eastmoney.com/f10/lsjz?fundCode=${code}&pageIndex=1&pageSize=${Math.min(rangeDays + 10, 500)}&startDate=${start}&endDate=${end}&_=${Date.now()}`;
+  const histR   = await fetch(CORS_PROXY + encodeURIComponent(histUrl), { headers: { Referer: 'https://fund.eastmoney.com/' } });
+  const histD   = await histR.json();
+  const map     = {};
+  (histD?.Data?.LSJZList || []).forEach(d => { map[d.FSRQ] = parseFloat(d.DWJZ); });
+
+  const nav  = parseFloat(est.gsz  || est.dwjz);
+  const prev = parseFloat(est.dwjz);
+  return { priceMap: map, currency: 'CNY', current: nav, prevClose: prev };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOLDINGS CALCULATION (weighted average cost)
+   ═══════════════════════════════════════════════════════════════ */
+function calcHoldings(txList, asOfDate) {
+  const h = {};
+  const sorted = [...txList].filter(t => t.date <= asOfDate).sort((a, b) => a.date.localeCompare(b.date));
+  for (const tx of sorted) {
+    const s = tx.symbol;
+    if (!h[s]) h[s] = { qty: 0, totalCost: 0, avgCost: 0, category: tx.category, name: tx.name, currency: tx.currency };
+    const pos = h[s];
+    if (tx.type === 'buy') {
+      pos.totalCost += tx.quantity * tx.price;
+      pos.qty       += tx.quantity;
+      pos.avgCost    = pos.qty > 0 ? pos.totalCost / pos.qty : 0;
+    } else {
+      pos.totalCost  = Math.max(0, pos.totalCost - pos.avgCost * tx.quantity);
+      pos.qty        = Math.max(0, pos.qty - tx.quantity);
+      if (pos.qty < 1e-9) { pos.qty = 0; pos.totalCost = 0; }
+    }
+  }
+  return Object.fromEntries(Object.entries(h).filter(([, p]) => p.qty > 1e-9));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMELINE (real transaction-aware portfolio history)
+   ═══════════════════════════════════════════════════════════════ */
+function buildTimeline(txList, cache, usdcny, rangeDays) {
+  const dates = dateRange(rangeDays);
+
+  // Pre-fill prices for every date in range (forward-fill gaps)
+  const filled = {};
+  for (const [sym, c] of Object.entries(cache)) {
+    if (!c?.priceMap) continue;
+    // seed with last price before range
+    let last = null;
+    for (const [d, p] of Object.entries(c.priceMap)) { if (d < dates[0] && p != null) last = p; }
+    filled[sym] = { prices: {}, currency: c.currency };
+    for (const date of dates) {
+      if (c.priceMap[date] != null) last = c.priceMap[date];
+      filled[sym].prices[date] = last;
+    }
+  }
+
+  // Build running holdings state across time
+  const sortedTx = [...txList].sort((a, b) => a.date.localeCompare(b.date));
+  const running  = {};
+  let ti = 0;
+
+  const totals = dates.map(date => {
+    while (ti < sortedTx.length && sortedTx[ti].date <= date) {
+      const tx = sortedTx[ti];
+      const s  = tx.symbol;
+      if (!running[s]) running[s] = { qty: 0, totalCost: 0, avgCost: 0, currency: tx.currency };
+      const pos = running[s];
+      if (tx.type === 'buy') {
+        pos.totalCost += tx.quantity * tx.price;
+        pos.qty       += tx.quantity;
+        pos.avgCost    = pos.qty > 0 ? pos.totalCost / pos.qty : 0;
+      } else {
+        pos.totalCost  = Math.max(0, pos.totalCost - pos.avgCost * tx.quantity);
+        pos.qty        = Math.max(0, pos.qty - tx.quantity);
+        if (pos.qty < 1e-9) { pos.qty = 0; pos.totalCost = 0; }
+      }
+      ti++;
+    }
+    let total = 0;
+    for (const [sym, pos] of Object.entries(running)) {
+      if (pos.qty < 1e-9) continue;
+      const fp = filled[sym];
+      if (!fp) continue;
+      const price = fp.prices[date];
+      if (price == null) continue;
+      const rate = fp.currency === 'USD' ? usdcny : 1;
+      total += price * rate * pos.qty;
+    }
+    return total;
+  });
+
+  let start = 0;
+  while (start < totals.length - 1 && totals[start] === 0) start++;
+  return { dates: dates.slice(start), totals: totals.slice(start) };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: line chart
+   ═══════════════════════════════════════════════════════════════ */
+function renderLine(dates, totals) {
+  const ctx = $id('lineChart').getContext('2d');
+  if (S.lineChart) S.lineChart.destroy();
+  S.lineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        data: totals,
+        borderColor: '#58a6ff',
+        backgroundColor: 'rgba(88,166,255,0.08)',
+        borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => '  ' + cny(c.raw) } },
+      },
+      scales: {
+        x: { grid: { color: 'rgba(48,54,61,0.7)' }, ticks: { color: '#8b949e', maxTicksLimit: 6, maxRotation: 0 } },
+        y: { grid: { color: 'rgba(48,54,61,0.7)' }, ticks: { color: '#8b949e', callback: v => '¥' + fmt(v, 0) } },
+      },
+    },
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: donut chart
+   ═══════════════════════════════════════════════════════════════ */
+function renderDonut(holdings) {
+  const groups = {};
+  for (const [sym, pos] of Object.entries(holdings)) {
+    const c = S.cache[sym];
+    if (!c) continue;
+    const rate = c.currency === 'USD' ? S.usdcny : 1;
+    groups[pos.category] = (groups[pos.category] || 0) + c.current * rate * pos.qty;
+  }
+  const cats   = CAT_ORDER.filter(c => groups[c] > 0);
+  const colors = ['#58a6ff', '#3fb950', '#e3b341', '#bc8cff'];
+  const ctx    = $id('donutChart').getContext('2d');
+  if (S.donutChart) S.donutChart.destroy();
+  S.donutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels:   cats.map(c => CAT_LABEL[c]),
+      datasets: [{ data: cats.map(c => groups[c]), backgroundColor: colors.slice(0, cats.length), borderColor: '#161b22', borderWidth: 3 }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#c9d1d9', boxWidth: 10, padding: 14, font: { size: 12 } } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              return ` ${cny(ctx.raw)}  (${(ctx.raw / sum * 100).toFixed(1)}%)`;
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: grouped holdings table
+   ═══════════════════════════════════════════════════════════════ */
+function renderHoldings(holdings) {
+  const root = $id('holdings-root');
+
+  if (!Object.keys(holdings).length) {
+    root.innerHTML = '<div class="empty">暂无持仓，点击右上角「录入交易」开始添加</div>';
+    return { grandTotal: 0, grandCost: 0 };
+  }
+
+  // Column header
+  root.innerHTML = `
+    <div class="holdings-cols">
+      <span>资产</span>
+      <span class="hc-cost" style="text-align:right">成本均价</span>
+      <span style="text-align:right">现价</span>
+      <span style="text-align:right">日涨跌</span>
+      <span class="hc-mktval" style="text-align:right">市值</span>
+      <span style="text-align:right">浮盈亏</span>
+    </div>`;
+
+  let grandTotal = 0, grandCost = 0;
+
+  for (const cat of CAT_ORDER) {
+    const catEntries = Object.entries(holdings).filter(([, p]) => p.category === cat);
+    if (!catEntries.length) continue;
+
+    // Group subtotal
+    let grpTotal = 0, grpCost = 0;
+    for (const [sym, pos] of catEntries) {
+      const c = S.cache[sym]; if (!c) continue;
+      const rate = c.currency === 'USD' ? S.usdcny : 1;
+      grpTotal  += c.current * rate * pos.qty;
+      const cr   = pos.currency === 'USD' ? S.usdcny : 1;
+      grpCost   += pos.avgCost * cr * pos.qty;
+    }
+    const grpPct = grpCost > 0 ? (grpTotal - grpCost) / grpCost * 100 : 0;
+    grandTotal  += grpTotal; grandCost += grpCost;
+
+    root.insertAdjacentHTML('beforeend', `
+      <div class="group-head">
+        <span class="group-name">${CAT_LABEL[cat]}</span>
+        <span>
+          <span class="group-stat">${cny(grpTotal)}</span>
+          <span class="group-pct ${grpPct >= 0 ? 'up' : 'down'}">${pct(grpPct)}</span>
+        </span>
+      </div>`);
+
+    for (const [sym, pos] of catEntries) {
+      const c = S.cache[sym]; if (!c) continue;
+      const rate    = c.currency === 'USD' ? S.usdcny : 1;
+      const cr      = pos.currency === 'USD' ? S.usdcny : 1;
+      const mktval  = c.current * rate * pos.qty;
+      const costCNY = pos.avgCost * cr * pos.qty;
+      const pnlAbs  = mktval - costCNY;
+      const pnlPct  = costCNY > 0 ? pnlAbs / costCNY * 100 : 0;
+      const dayPct  = c.prevClose > 0 ? (c.current - c.prevClose) / c.prevClose * 100 : 0;
+      const unit    = cat === 'crypto' ? '枚' : cat === 'fund' ? '份' : '股';
+      const pfx     = c.currency === 'USD' ? '$' : '¥';
+      const cpfx    = pos.currency === 'USD' ? '$' : '¥';
+
+      root.insertAdjacentHTML('beforeend', `
+        <div class="h-row">
+          <div>
+            <div class="h-name">${pos.name || sym}</div>
+            <div class="h-symbol">${sym} · ${fmt(pos.qty, cat === 'crypto' ? 4 : 2)} ${unit}</div>
+          </div>
+          <div class="h-r h-cost">${cpfx}${fmt(pos.avgCost, cat === 'fund' ? 4 : 2)}</div>
+          <div class="h-r">${pfx}${fmt(c.current, cat === 'fund' ? 4 : 2)}</div>
+          <div class="h-r ${dayPct >= 0 ? 'up' : 'down'}">${pct(dayPct)}</div>
+          <div class="h-r h-mktval">${cny(mktval)}</div>
+          <div class="h-pnl">
+            <div class="h-pnl-abs ${pnlAbs >= 0 ? 'up' : 'down'}">${pnlAbs >= 0 ? '+' : ''}${cny(pnlAbs)}</div>
+            <div class="h-pnl-pct ${pnlAbs >= 0 ? 'up' : 'down'}">${pct(pnlPct)}</div>
+          </div>
+        </div>`);
+    }
+  }
+
+  return { grandTotal, grandCost };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: summary bar
+   ═══════════════════════════════════════════════════════════════ */
+function renderSummary(holdings, grandTotal, grandCost) {
+  const pnl    = grandTotal - grandCost;
+  const pnlPct = grandCost > 0 ? pnl / grandCost * 100 : 0;
+  let todayPnl = 0;
+  for (const [sym, pos] of Object.entries(holdings)) {
+    const c = S.cache[sym]; if (!c?.prevClose) continue;
+    const rate = c.currency === 'USD' ? S.usdcny : 1;
+    todayPnl  += (c.current - c.prevClose) * rate * pos.qty;
+  }
+  const todayBase = grandTotal - todayPnl;
+  const todayPct  = todayBase > 0 ? todayPnl / todayBase * 100 : 0;
+
+  $id('s-total').textContent = cny(grandTotal);
+
+  const te = $id('s-today');
+  te.textContent  = `${todayPnl >= 0 ? '+' : ''}${cny(todayPnl)}  (${pct(todayPct)})`;
+  te.className    = 's-sub ' + (todayPnl >= 0 ? 'up' : 'down');
+
+  const pe = $id('s-pnl');
+  pe.textContent  = `${pnl >= 0 ? '+' : ''}${cny(pnl)}`;
+  pe.className    = 's-sub ' + (pnl >= 0 ? 'up' : 'down');
+
+  const re = $id('s-rate');
+  re.textContent  = pct(pnlPct);
+  re.className    = 's-sub ' + (pnl >= 0 ? 'up' : 'down');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: transaction list
+   ═══════════════════════════════════════════════════════════════ */
+function renderTxList() {
+  const el     = $id('tx-list');
+  const sorted = [...S.txList].sort((a, b) => b.date.localeCompare(a.date));
+
+  if (!sorted.length) {
+    el.innerHTML = '<div class="empty" style="padding:16px 0">暂无交易记录</div>';
+    return;
+  }
+
+  const unit = t => t.category === 'crypto' ? '枚' : t.category === 'fund' ? '份' : '股';
+
+  el.innerHTML = `
+    <div class="tx-head">
+      <span>日期</span><span>操作</span><span>资产</span>
+      <span>数量</span><span>成交价</span><span>操作</span>
+    </div>` +
+  sorted.map(t => `
+    <div class="tx-row">
+      <span class="text-muted">${t.date}</span>
+      <span><span class="tag tag-${t.type}">${t.type === 'buy' ? '买入' : '卖出'}</span></span>
+      <span>${t.name || t.symbol} <span class="text-muted text-sm">${t.symbol}</span></span>
+      <span>${fmt(t.quantity, t.category === 'crypto' ? 4 : 2)} ${unit(t)}</span>
+      <span>${t.currency === 'USD' ? '$' : '¥'}${fmt(t.price, t.category === 'fund' ? 4 : 2)}</span>
+      <span>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('${t.id}')">编辑</button>
+      </span>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL
+   ═══════════════════════════════════════════════════════════════ */
+function onCatChange() {
+  const cat  = $id('m-cat').value;
+  const hints = {
+    a_stock:  '上证加 .SS，例：600519.SS',
+    us_stock: '美股 ticker，例：AAPL',
+    fund:     '天天基金6位代码，例：110022',
+    crypto:   'CoinGecko ID，例：bitcoin',
+  };
+  $id('m-hint').textContent     = hints[cat];
+  $id('m-cur').value            = cat === 'us_stock' ? 'USD' : 'CNY';
+  $id('m-qty-label').textContent = cat === 'crypto' ? '数量（枚）' : cat === 'fund' ? '份额（份）' : '数量（股）';
+}
+
+function openModal(id = null) {
+  S.editId = id;
+  $id('modal-title').textContent = id ? '编辑交易' : '录入交易';
+  $id('m-del').style.display     = id ? 'block' : 'none';
+
+  if (id) {
+    const tx = S.txList.find(t => t.id === id);
+    if (!tx) return;
+    $id('m-type').value  = tx.type;
+    $id('m-cat').value   = tx.category;
+    $id('m-sym').value   = tx.symbol;
+    $id('m-name').value  = tx.name || '';
+    $id('m-date').value  = tx.date;
+    $id('m-cur').value   = tx.currency;
+    $id('m-qty').value   = tx.quantity;
+    $id('m-price').value = tx.price;
+  } else {
+    $id('m-type').value  = 'buy';
+    $id('m-cat').value   = 'a_stock';
+    $id('m-sym').value   = '';
+    $id('m-name').value  = '';
+    $id('m-date').value  = today();
+    $id('m-cur').value   = 'CNY';
+    $id('m-qty').value   = '';
+    $id('m-price').value = '';
+  }
+  onCatChange();
+  show('modal');
+}
+
+function closeModal() { hide('modal'); }
+
+async function submitTx() {
+  const tx = {
+    id:       S.editId || uid(),
+    type:     $id('m-type').value,
+    category: $id('m-cat').value,
+    symbol:   $id('m-sym').value.trim(),
+    name:     $id('m-name').value.trim(),
+    date:     $id('m-date').value,
+    currency: $id('m-cur').value,
+    quantity: parseFloat($id('m-qty').value),
+    price:    parseFloat($id('m-price').value),
+  };
+
+  if (!tx.date || !tx.symbol || isNaN(tx.quantity) || isNaN(tx.price)) {
+    return alert('请填写完整的日期、代码、数量、价格');
+  }
+
+  S.txList = S.editId
+    ? S.txList.map(t => t.id === S.editId ? tx : t)
+    : [...S.txList, tx];
+
+  closeModal();
+  await saveData().catch(e => alert('保存失败：' + e.message));
+
+  // If new symbol, clear cache so it gets fetched
+  if (!S.cache[tx.symbol]) await render();
+  else await render();
+}
+
+async function deleteTx() {
+  if (!confirm('确认删除此条交易记录？')) return;
+  S.txList = S.txList.filter(t => t.id !== S.editId);
+  closeModal();
+  await saveData().catch(e => alert('保存失败：' + e.message));
+  await render();
+}
+
+function toggleTx() {
+  const p = $id('tx-panel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIME RANGE
+   ═══════════════════════════════════════════════════════════════ */
+function setRange(range) {
+  S.range = range;
+  document.querySelectorAll('.rtab').forEach(b => b.classList.toggle('active', b.dataset.range === range));
+  const { dates, totals } = buildTimeline(S.txList, S.cache, S.usdcny, RANGE_DAYS[range]);
+  renderLine(dates, totals);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN RENDER
+   ═══════════════════════════════════════════════════════════════ */
+async function render() {
+  const holdings = calcHoldings(S.txList, today());
+  const symbols  = Object.keys(holdings);
+
+  if (!symbols.length) {
+    $id('holdings-root').innerHTML = '<div class="empty">暂无持仓，点击右上角「录入交易」开始添加</div>';
+    renderTxList();
+    return;
+  }
+
+  // Fetch prices for symbols not yet in cache
+  const MAX_DAYS = 730;
+  const missing  = symbols.filter(s => !S.cache[s]);
+  if (missing.length) {
+    await Promise.allSettled(missing.map(async sym => {
+      const pos = holdings[sym];
+      try {
+        if (pos.category === 'a_stock' || pos.category === 'us_stock') {
+          S.cache[sym] = await fetchYahoo(sym, MAX_DAYS);
+        } else if (pos.category === 'crypto') {
+          S.cache[sym] = await fetchCrypto(sym, MAX_DAYS);
+        } else if (pos.category === 'fund') {
+          S.cache[sym] = await fetchFund(sym, MAX_DAYS);
+        }
+      } catch (e) { console.error(`Price fetch failed: ${sym}`, e); }
+    }));
+  }
+
+  // Promote current prices into a flat lookup (for renderHoldings)
+  // S.cache[sym] already has .current and .prevClose
+
+  const { dates, totals } = buildTimeline(S.txList, S.cache, S.usdcny, RANGE_DAYS[S.range]);
+  renderLine(dates, totals);
+  renderDonut(holdings);
+  const { grandTotal, grandCost } = renderHoldings(holdings);
+  renderSummary(holdings, grandTotal, grandCost);
+  renderTxList();
+
+  $id('updated-at').textContent = '更新于 ' + new Date().toLocaleString('zh-CN', { hour12: false });
+}
+
+async function refreshAll() {
+  S.cache = {};
+  await render();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════════ */
+async function init() {
+  try {
+    // USD/CNY rate
+    try {
+      const r   = await fetchYahoo('USDCNY=X', 5);
+      S.usdcny  = r.current || 7.25;
+      S.cache['USDCNY=X'] = r;
+    } catch { S.usdcny = 7.25; }
+
+    await loadData();
+    hide('loading');
+    show('main');
+    await render();
+  } catch (e) {
+    $id('loading').innerHTML = `
+      <div style="text-align:center;color:var(--red)">
+        <p style="font-size:16px">❌ 加载失败</p>
+        <p style="color:var(--muted);margin-top:8px;font-size:13px">${e.message}</p>
+        <button class="btn btn-ghost" style="margin-top:16px" onclick="clearToken()">重置 Token 重试</button>
+      </div>`;
+  }
+}
+
+(function boot() {
+  const token = localStorage.getItem('pf_token');
+  if (!token) {
+    hide('loading');
+    show('token-setup');
+  } else {
+    S.token = token;
+    init();
+  }
+})();
+</script>
+</body>
+</html>

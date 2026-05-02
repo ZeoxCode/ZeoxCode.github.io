@@ -5,8 +5,8 @@ on:
     branches:
       - main # default branch
     paths:
-      - 'source/_posts/**'  # 监控posts目录的变更
-      - '.github/workflows/pages.yml'  # 监控自身配置变更
+      - 'source/**'
+      - '.github/workflows/pages.yml'
 
 jobs:
   build:
